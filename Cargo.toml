@@ -1,16 +1,17 @@
 [package]
 name = "bevy_raylib"
 version = "0.0.1"
-edition = "2021"
+edition = "2018"
 license = "MIT OR Apache-2.0 OR Zlib"
-authors = ["ickk <crates@ickk.io>"]
-description = "A very simple Raylib plugin for Bevy"
-repository = "https://github.com/ickk/bevy_raylib"
-documentation = "https://docs.rs/bevy_raylib"
+authors = ["4yman-0", "ickk <crates@ickk.io>"]
+description = "A Raylib plugin for Bevy"
+homepage = "https://crates.io/crates/bevy_raylib2"
+repository = "https://github.com/4yman-0/bevy_raylib2"
+documentation = "https://docs.rs/bevy_raylib2"
 readme = "README.md"
 
 [dependencies]
-bevy_app = "0.11"
-bevy_ecs = "0.11"
-bevy_utils = "0.11"
-raylib = "3.7"
+bevy_app = "0.16.1"
+bevy_ecs = "0.16.1"
+bevy_utils = "0.16.1"
+raylib = "5.5.1"

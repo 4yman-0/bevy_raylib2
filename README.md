@@ -1,7 +1,7 @@
-bevy_raylib
+bevy_raylib2
 ===========
 
-This is a very simple raylib plugin for bevy.
+This is a Raylib plugin for Bevy.
 
 
 Usage

@@ -2,7 +2,7 @@
 name = "bevy_raylib"
 version = "0.0.1"
 edition = "2018"
-license = "MIT OR Apache-2.0 OR Zlib"
+license = "Apache-2.0"
 authors = ["4yman-0"]
 description = "A Raylib plugin for Bevy"
 homepage = "https://crates.io/crates/bevy_raylib2"

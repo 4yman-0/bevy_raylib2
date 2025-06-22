@@ -173,7 +173,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "df7370d0e46b60e071917711d0860721f5347bc958bf325975ae6913a5dfcf01"
 
 [[package]]
-name = "bevy_raylib"
+name = "bevy_raylib2"
 version = "0.0.1"
 dependencies = [
  "bevy_app",

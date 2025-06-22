@@ -1,8 +1,11 @@
 //! A Raylib plugin for bevy.
-#![expect(missing_docs, reason="Docmentation isn't written (yet)")]
+#![expect(missing_docs, reason = "Docmentation isn't written (yet)")]
 use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
 use raylib::prelude::*;
+
+mod context;
+pub use context::RaylibContext;
 
 pub mod prelude {
     pub use crate::{Cursor, RaylibContext, RaylibPlugin, WindowConfig};
@@ -50,17 +53,6 @@ pub fn update_cursor(raylib_context: NonSend<RaylibContext>, mut cursor: ResMut<
     *cursor = {
         let Vector2 { x, y } = raylib_context.rl.get_mouse_position();
         Cursor { x, y }
-    }
-}
-
-pub struct RaylibContext {
-    pub rl: RaylibHandle,
-    thread: RaylibThread,
-}
-
-impl RaylibContext {
-    pub fn begin_drawing(&mut self) -> RaylibDrawHandle {
-        self.rl.begin_drawing(&self.thread)
     }
 }
 

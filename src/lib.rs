@@ -4,9 +4,6 @@ use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
 use raylib::prelude::*;
 
-mod context;
-pub use context::RaylibContext;
-
 pub mod prelude {
     pub use crate::{Cursor, RaylibContext, RaylibPlugin, WindowConfig};
     pub use raylib::prelude::*;
@@ -47,6 +44,17 @@ fn runner(mut app: App) -> AppExit {
     }
 
     AppExit::Success
+}
+
+pub struct RaylibContext {
+    pub rl: RaylibHandle,
+    thread: RaylibThread,
+}
+
+impl RaylibContext {
+	pub fn thread(&self) -> &RaylibThread {
+		&self.thread
+	}
 }
 
 pub fn update_cursor(raylib_context: NonSend<RaylibContext>, mut cursor: ResMut<Cursor>) {

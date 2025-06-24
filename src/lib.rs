@@ -5,7 +5,7 @@ use bevy_ecs::prelude::*;
 use raylib::prelude::*;
 
 pub mod prelude {
-    pub use crate::{Cursor, RaylibContext, RaylibPlugin, WindowConfig};
+    pub use crate::{Cursor, RaylibThreadHandle, RaylibPlugin, WindowConfig};
     pub use raylib::prelude::*;
 }
 
@@ -24,19 +24,18 @@ fn runner(mut app: App) -> AppExit {
         .world_mut()
         .remove_resource::<WindowConfig>()
         .unwrap_or_default();
-    let raylib_context = {
-        let (rl, thread) = raylib::init()
-            .size(window_config.width, window_config.height)
-            .title(&window_config.title)
-            .build();
-        RaylibContext { rl, thread }
-    };
-    app.world_mut().insert_non_send_resource(raylib_context);
-
+    let (rl, thread) = raylib::init()
+        .size(window_config.width, window_config.height)
+        .title(&window_config.title)
+        .build();
+    let world_mut = app.world_mut();
+    world_mut.insert_non_send_resource(rl);
+    world_mut.insert_non_send_resource(RaylibThreadHandle(thread));
+    
     let should_close = |app: &App| {
         app.world()
-            .get_non_send_resource::<RaylibContext>()
-            .is_some_and(|context| context.rl.window_should_close())
+            .get_non_send_resource::<RaylibHandle>()
+            .is_some_and(|handle| handle.window_should_close())
     };
 
     while !should_close(&app) {
@@ -46,20 +45,17 @@ fn runner(mut app: App) -> AppExit {
     AppExit::Success
 }
 
-pub struct RaylibContext {
-    pub rl: RaylibHandle,
-    thread: RaylibThread,
-}
+pub struct RaylibThreadHandle(RaylibThread);
 
-impl RaylibContext {
-	pub fn thread(&self) -> &RaylibThread {
-		&self.thread
+impl AsRef<RaylibThread> for RaylibThreadHandle {
+	fn as_ref(&self) -> &RaylibThread {
+		&self.0
 	}
 }
 
-pub fn update_cursor(raylib_context: NonSend<RaylibContext>, mut cursor: ResMut<Cursor>) {
+pub fn update_cursor(raylib_handle: NonSend<RaylibHandle>, mut cursor: ResMut<Cursor>) {
     *cursor = {
-        let Vector2 { x, y } = raylib_context.rl.get_mouse_position();
+        let Vector2 { x, y } = raylib_handle.get_mouse_position();
         Cursor { x, y }
     }
 }

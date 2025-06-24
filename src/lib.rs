@@ -5,7 +5,7 @@ use bevy_ecs::prelude::*;
 use raylib::prelude::*;
 
 pub mod prelude {
-    pub use crate::{Cursor, RaylibThreadHandle, RaylibPlugin, WindowConfig};
+    pub use crate::{Cursor, RaylibPlugin, RaylibThreadHandle, WindowConfig};
     pub use raylib::prelude::*;
 }
 
@@ -31,7 +31,7 @@ fn runner(mut app: App) -> AppExit {
     let world_mut = app.world_mut();
     world_mut.insert_non_send_resource(rl);
     world_mut.insert_non_send_resource(RaylibThreadHandle(thread));
-    
+
     let should_close = |app: &App| {
         app.world()
             .get_non_send_resource::<RaylibHandle>()
@@ -48,9 +48,9 @@ fn runner(mut app: App) -> AppExit {
 pub struct RaylibThreadHandle(RaylibThread);
 
 impl AsRef<RaylibThread> for RaylibThreadHandle {
-	fn as_ref(&self) -> &RaylibThread {
-		&self.0
-	}
+    fn as_ref(&self) -> &RaylibThread {
+        &self.0
+    }
 }
 
 pub fn update_cursor(raylib_handle: NonSend<RaylibHandle>, mut cursor: ResMut<Cursor>) {

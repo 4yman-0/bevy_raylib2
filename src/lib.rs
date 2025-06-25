@@ -5,7 +5,7 @@ use bevy_ecs::prelude::*;
 use raylib::prelude::*;
 
 pub mod prelude {
-    pub use crate::{RaylibPlugin, RaylibThreadHandle, WindowConfig};
+    pub use crate::{RaylibConfig, RaylibPlugin, RaylibThreadHandle};
     pub use raylib::prelude::*;
 }
 
@@ -18,21 +18,24 @@ impl Plugin for RaylibPlugin {
 }
 
 fn runner(mut app: App) -> AppExit {
-    let window_config = app
+    let builder = app
         .world_mut()
-        .remove_resource::<WindowConfig>()
+        .remove_resource::<RaylibConfig>()
         .unwrap_or_default();
-    let (rl, thread) = raylib::init()
-        .size(window_config.width, window_config.height)
-        .title(&window_config.title)
+    let (rl, thread) = init()
+        .title(builder.title.as_str())
+        .height(builder.height)
+        .width(builder.width)
         .build();
     app.world_mut().insert_non_send_resource(rl);
-    app.world_mut().insert_non_send_resource(RaylibThreadHandle(thread));
+    app.world_mut()
+        .insert_non_send_resource(RaylibThreadHandle(thread));
 
-    let should_close = |app: &App| app
-        .world()
-        .get_non_send_resource::<RaylibHandle>()
-        .is_some_and(|handle| handle.window_should_close());
+    let should_close = |app: &App| {
+        app.world()
+            .get_non_send_resource::<RaylibHandle>()
+            .is_some_and(|handle| handle.window_should_close())
+    };
 
     while !should_close(&app) {
         app.update();
@@ -50,18 +53,18 @@ impl AsRef<RaylibThread> for RaylibThreadHandle {
 }
 
 #[derive(Resource)]
-pub struct WindowConfig {
+pub struct RaylibConfig {
     pub width: i32,
     pub height: i32,
     pub title: String,
 }
 
-impl Default for WindowConfig {
+impl Default for RaylibConfig {
     fn default() -> Self {
-        WindowConfig {
+        Self {
             width: 640,
             height: 480,
-            title: "App".to_owned(),
+            title: "bevy_raylib2".to_string(),
         }
     }
 }

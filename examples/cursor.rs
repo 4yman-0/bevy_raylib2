@@ -17,8 +17,8 @@ fn main() {
 fn render(
     mut raylib: NonSendMut<RaylibHandle>,
     thread: NonSend<RaylibThreadHandle>,
-    cursor: Res<Cursor>,
 ) {
+	let cursor = raylib.get_mouse_position();
     let mut d = raylib.begin_drawing(thread.as_ref());
     d.clear_background(Color::WHITE);
     d.draw_text(

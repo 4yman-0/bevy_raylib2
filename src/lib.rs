@@ -1,23 +1,33 @@
 //! A Raylib plugin for bevy.
+#![no_std]
 #![expect(missing_docs, reason = "Docmentation isn't written (yet)")]
+extern crate alloc;
 extern crate bevy_app;
 extern crate bevy_ecs;
 extern crate raylib;
+
+use alloc::string::String;
 
 use bevy_app::prelude::*;
 //use bevy_ecs::prelude::*;
 use raylib::prelude::*;
 
+#[cfg(feature = "input")]
+mod input;
+
 pub mod prelude {
     pub use crate::{RaylibPlugin, RaylibThreadHandle};
     pub use raylib::prelude::*;
+
+    #[cfg(feature = "input")]
+    pub use input::*;
 }
 
 pub struct RaylibPlugin {
-	pub width: i32,
-	pub height: i32,
-	pub title: String,
-	pub vsync: bool,
+    pub width: i32,
+    pub height: i32,
+    pub title: String,
+    pub vsync: bool,
 }
 
 impl Default for RaylibPlugin {
@@ -25,7 +35,7 @@ impl Default for RaylibPlugin {
         Self {
             width: 640,
             height: 480,
-            title: "bevy_raylib2".to_string(),
+            title: String::from("bevy_raylib2"),
             vsync: true,
         }
     }
@@ -38,17 +48,17 @@ impl Plugin for RaylibPlugin {
 }
 
 impl From<&RaylibPlugin> for RaylibBuilder {
-	fn from(from: &RaylibPlugin) -> Self {
-		let mut builder = init();
-		builder
-			.title(from.title.as_str())
-			.height(from.height)
-			.width(from.width);
-		if from.vsync {
-			builder.vsync();
-		}
-		builder
-	}
+    fn from(from: &RaylibPlugin) -> Self {
+        let mut builder = init();
+        builder
+            .title(from.title.as_str())
+            .height(from.height)
+            .width(from.width);
+        if from.vsync {
+            builder.vsync();
+        }
+        builder
+    }
 }
 
 fn runner(mut app: App) -> AppExit {
@@ -73,8 +83,10 @@ fn runner(mut app: App) -> AppExit {
 
 pub struct RaylibThreadHandle(RaylibThread);
 
-impl AsRef<RaylibThread> for RaylibThreadHandle {
-    fn as_ref(&self) -> &RaylibThread {
+impl core::ops::Deref for RaylibThreadHandle {
+    type Target = RaylibThread;
+
+    fn deref(&self) -> &RaylibThread {
         &self.0
     }
 }

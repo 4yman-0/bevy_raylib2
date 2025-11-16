@@ -1,28 +1,26 @@
-//! A Raylib plugin for bevy.
+//! A Raylib plugin for Bevy.
+//!
+//! This module integrates Raylib into Bevy.
+
 #![no_std]
-#![expect(missing_docs, reason = "Docmentation isn't written (yet)")]
 extern crate alloc;
-extern crate bevy_app;
-extern crate bevy_ecs;
-extern crate raylib;
 
 use alloc::string::String;
-
 use bevy_app::prelude::*;
-//use bevy_ecs::prelude::*;
+use bevy_ecs::prelude::*;
 use raylib::prelude::*;
 
-#[cfg(feature = "input")]
-mod input;
-
+/// The bevy_raylib2 prelude
 pub mod prelude {
-    pub use crate::{RaylibPlugin, RaylibThreadHandle};
+    #[allow(ambiguous_glob_reexports)]
+    pub use crate::*;
     pub use raylib::prelude::*;
-
-    #[cfg(feature = "input")]
-    pub use input::*;
 }
 
+/// Configuration for the Raylib window and plugin behavior.
+///
+/// This plugin replaces the Bevy app's runner with a Raylib-powered loop.
+/// All configuration is applied to a RaylibBuilder during startup.
 pub struct RaylibPlugin {
     pub width: i32,
     pub height: i32,
@@ -42,18 +40,21 @@ impl Default for RaylibPlugin {
 }
 
 impl Plugin for RaylibPlugin {
+    /// Registers the Raylib runner to override Bevy’s default runner.
     fn build(&self, app: &mut App) {
         app.set_runner(runner);
     }
 }
 
 impl From<&RaylibPlugin> for RaylibBuilder {
+    /// Converts RaylibPlugin configuration into a Raylib window builder.
     fn from(from: &RaylibPlugin) -> Self {
         let mut builder = init();
         builder
             .title(from.title.as_str())
             .height(from.height)
             .width(from.width);
+
         if from.vsync {
             builder.vsync();
         }
@@ -61,29 +62,38 @@ impl From<&RaylibPlugin> for RaylibBuilder {
     }
 }
 
+/// Custom Bevy runner that sets up Raylib and performs the render loop.
 fn runner(mut app: App) -> AppExit {
-    let builder = *app.get_added_plugins::<RaylibPlugin>().first().unwrap();
+    let builder = *app
+        .get_added_plugins::<RaylibPlugin>()
+        .first()
+        .expect("Cannot get Raylib plugin");
+
     let (rl, thread) = RaylibBuilder::from(builder).build();
+
     app.world_mut().insert_non_send_resource(rl);
     app.world_mut()
         .insert_non_send_resource(RaylibThreadHandle(thread));
 
-    let should_close = |app: &App| {
-        app.world()
-            .get_non_send_resource::<RaylibHandle>()
-            .is_some_and(|handle| handle.window_should_close())
-    };
-
-    while !should_close(&app) {
+    // Main loop
+    while app
+        .world()
+        .get_non_send_resource::<RaylibHandle>()
+        .is_some_and(|handle| !handle.window_should_close())
+    {
         app.update();
     }
 
     AppExit::Success
 }
 
+/// A wrapper around RaylibThread to implement Deref.
+///
+/// Required because RaylibThread does not implement Clone or Send,
+/// and must remain in a NonSend resource.
 pub struct RaylibThreadHandle(RaylibThread);
 
-impl core::ops::Deref for RaylibThreadHandle {
+impl ::core::ops::Deref for RaylibThreadHandle {
     type Target = RaylibThread;
 
     fn deref(&self) -> &RaylibThread {

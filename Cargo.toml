@@ -1,7 +1,7 @@
 [package]
 name = "bevy_raylib2"
 version = "0.0.1"
-edition = "2015"
+edition = "2018"
 license = "Apache-2.0"
 authors = ["4yman-0"]
 description = "A Raylib plugin for Bevy"
@@ -18,4 +18,3 @@ raylib = "5.5.1"
 
 [features]
 default = []
-input = []

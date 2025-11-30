@@ -2,12 +2,14 @@
 //!
 //! This module integrates Raylib into Bevy.
 
+//#![add_test("../README.md")]
+
 #![no_std]
 extern crate alloc;
 
 use alloc::string::String;
 use bevy_app::prelude::*;
-use bevy_ecs::prelude::*;
+//use bevy_ecs::prelude::*;
 use raylib::prelude::*;
 
 /// The bevy_raylib2 prelude
@@ -80,6 +82,7 @@ fn runner(mut app: App) -> AppExit {
         .world()
         .get_non_send_resource::<RaylibHandle>()
         .is_some_and(|handle| !handle.window_should_close())
+        || app.should_exit().is_some()
     {
         app.update();
     }
@@ -89,7 +92,7 @@ fn runner(mut app: App) -> AppExit {
 
 /// A wrapper around RaylibThread to implement Deref.
 ///
-/// Required because RaylibThread does not implement Clone or Send,
+/// Required because RaylibThread does not implement Clone or Send
 /// and must remain in a NonSend resource.
 pub struct RaylibThreadHandle(RaylibThread);
 

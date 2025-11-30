@@ -8,13 +8,12 @@ Usage
 -----
 
 ```rust
-use bevy_app::prelude::*;
-use bevy_ecs::prelude::*;
+use bevy::prelude::*;
 use bevy_raylib2::prelude::*;
-use bevy_utils::prelude::*;
 
 fn main() {
     App::new()
+    	.add_plugins(MinimalPlugins)
         .add_plugins(RaylibPlugin)
         .insert_resource(WindowConfig {
             title: "Bevy + Raylib".to_owned(),
@@ -39,5 +38,4 @@ fn render(
         Color::BLACK,
     );
 }
-
 ```

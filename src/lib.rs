@@ -12,7 +12,7 @@ use bevy_app::prelude::*;
 //use bevy_ecs::prelude::*;
 use raylib::prelude::*;
 
-/// The bevy_raylib2 prelude
+/// The `bevy_raylib2` prelude
 pub mod prelude {
     #[allow(ambiguous_glob_reexports)]
     pub use crate::*;
@@ -22,7 +22,7 @@ pub mod prelude {
 /// Configuration for the Raylib window and plugin behavior.
 ///
 /// This plugin replaces the Bevy app's runner with a Raylib-powered loop.
-/// All configuration is applied to a RaylibBuilder during startup.
+/// All configuration is applied to a `RaylibBuilder` during startup.
 pub struct RaylibPlugin {
     pub width: i32,
     pub height: i32,
@@ -49,7 +49,7 @@ impl Plugin for RaylibPlugin {
 }
 
 impl From<&RaylibPlugin> for RaylibBuilder {
-    /// Converts RaylibPlugin configuration into a Raylib window builder.
+    /// Converts `RaylibPlugin` configuration into a Raylib window builder.
     fn from(from: &RaylibPlugin) -> Self {
         let mut builder = init();
         builder
@@ -87,13 +87,13 @@ fn runner(mut app: App) -> AppExit {
         app.update();
     }
 
-    AppExit::Success
+    app.should_exit().unwrap_or(AppExit::Success)
 }
 
-/// A wrapper around RaylibThread to implement Deref.
+/// A wrapper around `RaylibThread` to implement Deref.
 ///
-/// Required because RaylibThread does not implement Clone or Send
-/// and must remain in a NonSend resource.
+/// Required because `RaylibThread` does not implement Clone or Send
+/// and must remain in a `NonSend` resource.
 pub struct RaylibThreadHandle(RaylibThread);
 
 impl ::core::ops::Deref for RaylibThreadHandle {

@@ -12,7 +12,7 @@ readme = "README.md"
 
 [dependencies]
 bevy_app = "0.17.2"
-bevy_ecs = "0.17.2"
+bevy_ecs = "0.18.0"
 bevy_utils = "0.17.2"
 raylib = "5.5.1"
 

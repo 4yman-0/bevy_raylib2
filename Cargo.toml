@@ -11,10 +11,11 @@ documentation = "https://docs.rs/bevy_raylib2"
 readme = "README.md"
 
 [dependencies]
-bevy_app = "0.17.2"
-bevy_ecs = "0.17.2"
-bevy_utils = "0.17.2"
-raylib = "5.5.1"
+bevy_app = { version = "0.18.0", default-features = false }
+bevy_ecs = { version = "0.18.0", default-features = false }
+bevy_utils = { version = "0.18.0", default-features = false }
+raylib = { version = "5.5.1", default-features = false }
 
 [features]
-default = []
+default = [ "bindgen" ]
+bindgen = [ "raylib/bindgen" ]

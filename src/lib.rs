@@ -1,6 +1,4 @@
 //! A Raylib plugin for Bevy.
-//!
-//! This module integrates Raylib into Bevy.
 
 //#![add_test("../README.md")]
 
@@ -75,7 +73,7 @@ fn runner(mut app: App) -> AppExit {
 
     app.world_mut().insert_non_send_resource(rl);
     app.world_mut()
-        .insert_non_send_resource(RaylibThreadHandle(thread));
+        .insert_non_send_resource(thread);
 
     // Main loop
     while app
@@ -88,18 +86,4 @@ fn runner(mut app: App) -> AppExit {
     }
 
     app.should_exit().unwrap_or(AppExit::Success)
-}
-
-/// A wrapper around `RaylibThread` to implement Deref.
-///
-/// Required because `RaylibThread` does not implement Clone or Send
-/// and must remain in a `NonSend` resource.
-pub struct RaylibThreadHandle(RaylibThread);
-
-impl ::core::ops::Deref for RaylibThreadHandle {
-    type Target = RaylibThread;
-
-    fn deref(&self) -> &RaylibThread {
-        &self.0
-    }
 }

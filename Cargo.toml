@@ -14,8 +14,11 @@ readme = "README.md"
 bevy_app = { version = "0.18.0", default-features = false }
 bevy_ecs = { version = "0.18.0", default-features = false }
 bevy_utils = { version = "0.18.0", default-features = false }
-raylib = { version = "5.5.1", default-features = false }
+raylib = { version = "6.0.0", default-features = false }
 
-[features]
-default = [ "bindgen" ]
-bindgen = [ "raylib/bindgen" ]
+[dev-dependencies]
+raylib = {
+	version = "6.0.0",
+	default-features = false,
+	features = ["wayland", "opengl_21"],
+}
